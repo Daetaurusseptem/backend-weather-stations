@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "npx nodemon dist/index.js",
     "wachea": "tsc --watch",
-    "test": "jest"
+    "test": "jest",
+    "start": "npm install && wachea && nodemon dist/index.js"
   },
   "repository": {
     "type": "git",
