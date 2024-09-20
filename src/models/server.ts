@@ -117,7 +117,7 @@ class Server {
   }
 
   // Iniciar el servidor
-  public start(port?: number ): void {
+  public start(port: number ): void {
     this.server.listen(port, () => {
       console.log(`Servidor corriendo en el puerto ${port}`);
     }); 
