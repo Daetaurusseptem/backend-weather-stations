@@ -7,7 +7,7 @@
     "dev": "npx nodemon dist/index.js",
     "wachea": "tsc --watch",
     "test": "jest",
-    "start": "npm install && wachea && nodemon dist/index.js"
+    "start": "wachea && node dist/index.js"
   },
   "repository": {
     "type": "git",
