@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import server from '../models/server';
 import Estacion from '../models/models-mongoose/estacion';
 import Municipio from '../models/models-mongoose/municipio';
+import estacion from '../models/models-mongoose/estacion';
 
 
 // Crear una nueva estación
@@ -74,7 +75,7 @@ export const obtenerEstacionPorId = async (req: Request, res: Response, next: Ne
 // Obtener una estación sin flag asignar = true
 export const obtenerEstacionesDisponibles = async (req: Request, res: Response) => {
   try {
-    const estacionesDisponibles = await Estacion.find({ asignada: false });
+    const estacionesDisponibles = await estacion.find({ asignada: false });
     return res.status(200).json(estacionesDisponibles);
   } catch (error) {
     return res.status(500).json({ message: 'Error al obtener las estaciones disponibles', error });

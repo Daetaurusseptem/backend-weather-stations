@@ -158,7 +158,7 @@ router.get('/disponibles', obtenerEstacionesDisponibles);  // No requiere JWT
  *           schema:
  *             type: object
  *             properties:
- *               estacion_id:
+ *               estacion_id: 
  *                 type: string
  *                 description: ID de la estación a asignar
  *     responses:

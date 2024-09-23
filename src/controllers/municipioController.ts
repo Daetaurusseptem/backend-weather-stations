@@ -17,7 +17,7 @@ export const crearMunicipio = async (req: Request, res: Response, next: NextFunc
 export const obtenerMunicipios = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const municipios = await Municipio.find();
-    res.json(municipios);
+    res.json({ok:true, municipios});
   } catch (error) {
     next(error);
   }
