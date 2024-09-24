@@ -7,7 +7,8 @@ import {
   eliminarEstacion,
   obtenerEstacionesPorMunicipio,
   obtenerEstacionesDisponibles,
-  asignarEstacion
+  asignarEstacion,
+  obtenerEstacionesFiltradas
 } from '../controllers/estacionController';
 import { crearEstacionValidator } from '../middleware/validations';
 import { validateRequest } from '../middleware/errorHandler';
@@ -170,6 +171,56 @@ router.get('/disponibles', obtenerEstacionesDisponibles);  // No requiere JWT
  *         description: Estación no encontrada
  */
 router.post('/asignar', autenticarJWT, asignarEstacion);  // Requiere JWT
+/**
+ * @swagger
+ * /api/estaciones/filtro-estaciones:
+ *   get:
+ *     summary: Obtener una lista de estaciones con filtros por municipio y término de búsqueda.
+ *     tags:
+ *       - Estaciones
+ *     parameters:
+ *       - name: municipio
+ *         in: query
+ *         description: Filtra estaciones por municipio
+ *         required: false
+ *         schema:
+ *           type: string
+ *       - name: termino
+ *         in: query
+ *         description: Término de búsqueda (nombre de la estación)
+ *         required: false
+ *         schema:
+ *           type: string
+ *       - name: pagina
+ *         in: query
+ *         description: Número de página (por defecto 1)
+ *         required: false
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Lista de estaciones paginada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 ok: 
+ *                   type: boolean
+ *                 pagina:
+ *                   type: integer
+ *                 totalPaginas:
+ *                   type: integer
+ *                 totalEstaciones:
+ *                   type: integer
+ *                 estaciones:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Estacion'
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/filtro-estaciones', obtenerEstacionesFiltradas);
 
 /**
  * @swagger
@@ -274,5 +325,6 @@ router.delete('/:id', autenticarJWT, eliminarEstacion);  // Requiere JWT
  *         description: No se encontraron estaciones en el municipio
  */
 router.get('/municipio/:municipioId', obtenerEstacionesPorMunicipio);  // No requiere JWT
+
 
 export default router;

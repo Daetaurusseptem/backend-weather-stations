@@ -12,6 +12,7 @@ import authRoutes from '../routes/authRoutes';
 import municipioRoutes from '../routes/municipioRoutes';
 import estacionRoutes from '../routes/estacionRouting';
 import sensorRoutes from '../routes/SensoresRouting';
+import usuarioRoutes from '../routes/usuariosRouting';
 
 // Middleware de errores
 import { errorMiddleware } from '../middleware/errorMiddleware';
@@ -48,7 +49,7 @@ class Server {
     const mongoUri = process.env.MONGO_URI;
     
     mongoose.connect(mongoUri!)
-      .then(() => console.log('Conexión a MongoDB establecida'))
+      
       .catch(err => console.error('Error de conexión a MongoDB:', err));
   }
 
@@ -83,6 +84,7 @@ class Server {
     this.app.use('/api/municipios', municipioRoutes);
     this.app.use('/api/estaciones', estacionRoutes); 
     this.app.use('/api/sensores', sensorRoutes);
+    this.app.use('/api/usuarios', usuarioRoutes);
     
     // Middleware de error
     this.app.use(errorMiddleware);
@@ -96,23 +98,23 @@ class Server {
   // Configuración de Sockets
   private sockets(): void {
     this.io.on('connection', (socket) => {
-      console.log('Cliente conectado:', socket.id);
+      
   
       // El cliente se une a una sala específica basada en la estación que está monitoreando
       socket.on('join-station', (estacionId) => {
           socket.join(estacionId);
-          console.log(`Cliente ${socket.id} se unió a la estación ${estacionId}`);
+      
       });
   
       socket.on('disconnect', () => {
-          console.log('Cliente desconectado:', socket.id);
+      
       });
   });
   }
 
   // Emitir eventos de actualización
   public emit(event: string, data: any): void {
-    console.log(event);
+    
     this.io.emit(event, data);
   }
 
@@ -120,7 +122,7 @@ class Server {
   public start(port: number ): void {
   
     this.server.listen(port, () => {
-      console.log(`Servidor corriendo en el puerto ${port}`);
+      
     }); 
   }
 }

@@ -137,3 +137,39 @@ export const asignarEstacion = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Error al asignar la estación', error });
   }
 };
+export const obtenerEstacionesFiltradas = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { municipio, termino, pagina = 1 } = req.query;
+    const filtros: any = {};
+
+    // Filtro por municipio
+    if (municipio) {
+      filtros.municipio = municipio;
+    }
+
+    // Filtro por término de búsqueda (nombre de la estación)
+    if (termino) {
+      filtros.nombre = { $regex: termino, $options: 'i' };  // Búsqueda insensible a mayúsculas
+    }
+
+    // Paginación (20 estaciones por página)
+    const limit = 20;
+    const skip = (Number(pagina) - 1) * limit;
+
+    // Consulta con filtros y paginación
+    const estaciones = await Estacion.find(filtros).skip(skip).limit(limit);
+
+    // Número total de estaciones para el paginado
+    const total = await Estacion.countDocuments(filtros);
+
+    res.status(200).json({
+      ok: true,
+      pagina: Number(pagina),
+      totalPaginas: Math.ceil(total / limit),
+      totalEstaciones: total,
+      estaciones
+    });
+  } catch (error) {
+    next(error);
+  }
+};

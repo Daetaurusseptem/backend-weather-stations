@@ -3,11 +3,12 @@ import SensorData from '../models/models-mongoose/sensor-data';
 import Estacion from '../models/models-mongoose/estacion';
 import server from '../models/server'; // Importar la instancia de servidor
 import sensorData from '../models/models-mongoose/sensor-data';
+import SensorDataHistorial from '../models/models-mongoose/sensor-data-historial';
 
 // Crear datos de sensores para una estación
 export const crearDatosSensor = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log('ENTRO')
+    
     const { id } = req.params;
     const estacion = await Estacion.findById(id);
 
@@ -20,7 +21,13 @@ export const crearDatosSensor = async (req: Request, res: Response, next: NextFu
       ...req.body
     });
 
+    const historialData =new SensorDataHistorial({
+      estacion: id,
+      ...req.body
+    });
+    await historialData.save();
     await datosSensor.save();
+
     server.emit('sensor-data-updated', datosSensor); // Emitir evento
 
     res.status(201).json(datosSensor.populate('estacion'));
@@ -58,7 +65,7 @@ export const obtenerDatoSensorPorId = async (req: Request, res: Response, next: 
     if (!datoSensor) {
       return res.status(404).json({ message: 'Dato de sensor no encontrado' });
     }
-    console.log(datoSensor);
+    
     res.json({ok:true,sensor:datoSensor});
   } catch (error) {
     next(error);
@@ -75,7 +82,7 @@ export const obtenerDatoSensorPorEstacionId = async (req: Request, res: Response
       return res.status(404).json({ message: 'Dato de sensor no encontrado' });
     }
 
-    console.log(datoSensor);
+    
     res.json({ ok: true, sensor: datoSensor });
   } catch (error) {
     next(error);

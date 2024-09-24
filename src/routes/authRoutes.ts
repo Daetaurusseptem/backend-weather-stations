@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { registrarUsuario, loginUsuario, validarToken } from '../controllers/authController';
+import { registrarUsuario, login, validarToken, renewToken } from '../controllers/authController';
 import { body } from 'express-validator';
 import { validateRequest } from '../middleware/errorHandler';
 import { autenticarJWT } from '../middleware/authMiddleware';
@@ -108,7 +108,7 @@ router.post(
     body('password').notEmpty().withMessage('La contraseña es obligatoria'),
   ],
   validateRequest,
-  loginUsuario
+  login
 );
 /**
  * @swagger
@@ -147,11 +147,11 @@ router.post(
  *             schema:
  *               type: object
  *               properties:
- *                 message:
+ *                 message: 
  *                   type: string
  *                   example: Token no proporcionado o inválido.
  */
-router.get('/validate-token', autenticarJWT, validarToken);  // Aplica el middleware antes del controlador
+router.get('/validate-token', autenticarJWT, renewToken);  // Aplica el middleware antes del controlador
 
 
 export default router;

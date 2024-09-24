@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { crearMunicipio, obtenerMunicipios, obtenerMunicipioPorId } from '../controllers/municipioController';
+import { crearMunicipio, obtenerMunicipios, obtenerMunicipioPorId, obtenerMunicipiosFiltrados } from '../controllers/municipioController';
 import { autenticarJWT } from '../middleware/authMiddleware';
 import { crearMunicipioValidator } from '../middleware/validations';  // Validator para municipio
 import { validateRequest } from '../middleware/errorHandler';  // Middleware para manejar errores
@@ -81,6 +81,32 @@ router.get('/', obtenerMunicipios);  // No requiere JWT
 
 /**
  * @swagger
+ * /api/municipios/filtro-municipios:
+ *   get:
+ *     summary: Obtener lista de municipios con filtro y paginación
+ *     tags:
+ *       - Municipios
+ *     parameters:
+ *       - name: termino
+ *         in: query
+ *         description: Buscar por nombre del municipio
+ *         required: false
+ *         schema:
+ *           type: string
+ *       - name: pagina
+ *         in: query
+ *         description: Número de página para la paginación
+ *         required: false
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Lista de municipios paginada
+ */
+router.get('/filtro-municipios', obtenerMunicipiosFiltrados);
+
+/**
+ * @swagger
  * /api/municipio/{id}:
  *   get:
  *     summary: Obtiene un municipio por su ID
@@ -103,5 +129,7 @@ router.get('/', obtenerMunicipios);  // No requiere JWT
  *         description: Municipio no encontrado
  */
 router.get('/:id', obtenerMunicipioPorId);  // No requiere JWT
+
+
 
 export default router;

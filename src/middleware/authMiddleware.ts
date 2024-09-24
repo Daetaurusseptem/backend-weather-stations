@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+
+const jwt  = require('jsonwebtoken');
 
 interface JwtPayload {
   id: string;
@@ -9,22 +10,42 @@ interface JwtPayload {
   exp: number;
 }
 
-export const autenticarJWT = (req: Request, res: Response, next: NextFunction) => {
+
+export const autenticarJWT = (req : any, resp : Response, next:NextFunction)=>{
   const authHeader = req.headers.authorization;
+  console.log(req.headers);
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'No autorizado' });
+    return resp.status(401).json({ message: 'No autorizado' });
   }
-
   const token = authHeader.split(' ')[1];
+  
+  
+  
+  if(!token){
+      return resp.status(401).json({
+          ok:false,
+          msg:`no hay token en la validacion`
+      });
+  }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET || 'secreto') as JwtPayload;
-    req.user = { id: payload.id, nombre: payload.nombre, email: payload.email };
-    next();
-  } catch (error) {
-    return res.status(401).json({ message: 'Token inválido' });
-  }
-};
+      
+      const { uid } = jwt.verify(token, process.env.JWT);
+    
+      req.uid = uid;
+      console.log(req);
 
+
+      next();
+      
+  } catch (error) {
+    console.log(error);
+      return resp.status(401).json({
+          ok:false, 
+          msg:`token no valido ${error}`
+      });
+  }
+
+}
 
