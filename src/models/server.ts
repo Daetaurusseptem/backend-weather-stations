@@ -13,6 +13,7 @@ import municipioRoutes from '../routes/municipioRoutes';
 import estacionRoutes from '../routes/estacionRouting';
 import sensorRoutes from '../routes/SensoresRouting';
 import usuarioRoutes from '../routes/usuariosRouting';
+import metricasRoutes from '../routes/metricasRoutes';
 
 // Middleware de errores
 import { errorMiddleware } from '../middleware/errorMiddleware';
@@ -85,6 +86,7 @@ class Server {
     this.app.use('/api/estaciones', estacionRoutes); 
     this.app.use('/api/sensores', sensorRoutes);
     this.app.use('/api/usuarios', usuarioRoutes);
+    this.app.use('/api/metricas', metricasRoutes);
     
     // Middleware de error
     this.app.use(errorMiddleware);

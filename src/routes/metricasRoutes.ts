@@ -82,7 +82,6 @@ const router = Router();
 router.get('/:estacionId/:lapso',
   [
     // Validación de la estaciónId y el lapso
-    check('estacionId').isMongoId().withMessage('El ID de la estación debe ser válido'),
     check('lapso')
       .isIn(['hora', 'dia', 'semana', 'mes', 'dos-meses'])
       .withMessage('El lapso debe ser uno de los siguientes: hora, dia, semana, mes, dos-meses'),
