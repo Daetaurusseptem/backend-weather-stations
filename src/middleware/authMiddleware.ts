@@ -13,7 +13,6 @@ interface JwtPayload {
 
 export const autenticarJWT = (req : any, resp : Response, next:NextFunction)=>{
   const authHeader = req.headers.authorization;
-  console.log(req.headers);
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return resp.status(401).json({ message: 'No autorizado' });
@@ -34,13 +33,12 @@ export const autenticarJWT = (req : any, resp : Response, next:NextFunction)=>{
       const { uid } = jwt.verify(token, process.env.JWT);
     
       req.uid = uid;
-      console.log(req);
 
 
       next();
       
   } catch (error) {
-    console.log(error);
+    
       return resp.status(401).json({
           ok:false, 
           msg:`token no valido ${error}`

@@ -21,7 +21,7 @@ interface JwtPayload {
             },
             (err, token) => {
                 if (err) {
-                    console.log(token);
+                    
                     reject('could not generate JWT')
                 }else{
                     resolve(token)
@@ -48,7 +48,7 @@ export const generarScriptJWT = (uid:string) => {
             },
             (err, token) => {
                 if (err) {
-                    console.log(token);
+                    
                     reject('could not generate JWT')
                 }else{
                     resolve(token)

@@ -5,11 +5,14 @@ import Municipio from '../models/models-mongoose/municipio';
 export const crearMunicipio = async (req: Request, res: Response, next: NextFunction) => {
   try { 
     const { nombre, coordenadas } = req.body;
+    console.log(nombre, coordenadas);
     const nuevoMunicipio = new Municipio({ nombre, coordenadas });
     await nuevoMunicipio.save();
-    res.status(201).json(nuevoMunicipio);
-  } catch (error) {
-    next(error);
+    return res.status(201).json(nuevoMunicipio);
+  } catch (error:any) {
+    
+    return res.status(201).json({ok:false, error:error.message});
+    
   }
 };
 
@@ -54,6 +57,34 @@ export const obtenerMunicipiosFiltrados = async (req: Request, res: Response, ne
       totalPaginas: Math.ceil(totalMunicipios / limite),
       totalMunicipios,
       municipios
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const actualizarMunicipio = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+  const { nombre, coordenadas } = req.body;
+
+  try {
+    // Buscar y actualizar el municipio
+    const municipio = await Municipio.findByIdAndUpdate(
+      id,
+      { nombre, coordenadas },
+      { new: true, runValidators: true }  // new: true devuelve el documento actualizado
+    );
+
+    // Si no se encuentra el municipio
+    if (!municipio) {
+      return res.status(404).json({
+        ok: false,
+        message: 'Municipio no encontrado'
+      });
+    }
+
+    res.status(200).json({
+      ok: true,
+      municipio
     });
   } catch (error) {
     next(error);

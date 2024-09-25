@@ -31,24 +31,33 @@ export const obtenerUsuarioPorId = async (req: Request, res: Response, next: Nex
 // Crear un nuevo usuario
 export const crearUsuario = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, email, role } = req.body;
-    const nuevoUsuario = new Usuario({ name, email, role });
+    const { nombre, email, password } = req.body;
+    const nuevoUsuario = new Usuario({ nombre, email, password });
     await nuevoUsuario.save();
-    res.status(201).json(nuevoUsuario);
+    res.status(201).json({ok:true,nuevoUsuario}); 
   } catch (error) {
-    res.status(400).json({ message: 'Error al crear el usuario', error });
+    res.status(400).json({ ok:false, message: 'Error al crear el usuario', error });
   }
 };
 
 // Actualizar un usuario por ID
 export const actualizarUsuario = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log('update');
     const { id } = req.params;
-    const { name, email, role } = req.body;
+    const { nombre, email, role } = req.body;
+
+    const usuario = await Usuario.findById(id);
+
+    if(!usuario){
+      res.status(404).json({ok:false, message: 'usuario no encontrado'})
+    }
+    
+    
 
     const usuarioActualizado = await Usuario.findByIdAndUpdate(
       id,
-      { name, email, role },
+      { nombre, email, role },
       { new: true }
     );
 
@@ -56,8 +65,9 @@ export const actualizarUsuario = async (req: Request, res: Response, next: NextF
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    res.json(usuarioActualizado);
+    return res.status(201).json({ok:true, usuario:usuarioActualizado});
   } catch (error) {
+    return res.status(500).json({ok:false, msg:'Hubo un error'})
     next(error);
   }
 };

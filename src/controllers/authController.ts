@@ -30,9 +30,9 @@ export const registrarUsuario = async (req: Request, res: Response, next: NextFu
 
 // Iniciar sesión
 export const login = async  (req:Request, resp:Response)=>{
-  console.log('login ');
+  
   const {email, password} = req.body
-  console.log(email, password);
+  
 
   
   try {
@@ -55,7 +55,7 @@ export const login = async  (req:Request, resp:Response)=>{
            })
        }
        
-      console.log(JSON.stringify(usuarioDB._id));
+      
       const token = await generarJWT(usuarioDB._id as string)
        
       
@@ -90,11 +90,11 @@ export const validarToken = (req: Request, res: Response) => {
 export const renewToken = async (req: any, resp: Response) => {
   try {
       const uid = req.uid;
-      console.log(uid);
+      
 
       // Generar nuevo JWT
       const token = await generarJWT(uid);
-      console.log('Nuevo token generado para el usuario:', uid);
+      
 
       // Buscar usuario por UID
       const usuario = await Usuario.findById(uid).select('+password');

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import server from '../models/server';
 import Estacion from '../models/models-mongoose/estacion';
-import Municipio from '../models/models-mongoose/municipio';
 import estacion from '../models/models-mongoose/estacion';
 
 
@@ -61,13 +60,13 @@ export const obtenerEstaciones = async (req: Request, res: Response, next: NextF
 export const obtenerEstacionPorId = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const estacion = await Estacion.findById(id);
+    const estacion = await Estacion.findById(id).populate('municipio')
     
     if (!estacion) {
       return res.status(404).json({ message: 'Estación no encontrada' });
     }
     
-    res.json(estacion);
+    res.status(201).json({ok:true,estacion});
   } catch (error) {
     next(error);
   }
@@ -157,7 +156,7 @@ export const obtenerEstacionesFiltradas = async (req: Request, res: Response, ne
     const skip = (Number(pagina) - 1) * limit;
 
     // Consulta con filtros y paginación
-    const estaciones = await Estacion.find(filtros).skip(skip).limit(limit);
+    const estaciones = await Estacion.find(filtros).skip(skip).limit(limit).populate('municipio');
 
     // Número total de estaciones para el paginado
     const total = await Estacion.countDocuments(filtros);

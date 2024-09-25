@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { crearMunicipio, obtenerMunicipios, obtenerMunicipioPorId, obtenerMunicipiosFiltrados } from '../controllers/municipioController';
+import { crearMunicipio, obtenerMunicipios, obtenerMunicipioPorId, obtenerMunicipiosFiltrados, actualizarMunicipio } from '../controllers/municipioController';
 import { autenticarJWT } from '../middleware/authMiddleware';
 import { crearMunicipioValidator } from '../middleware/validations';  // Validator para municipio
 import { validateRequest } from '../middleware/errorHandler';  // Middleware para manejar errores
@@ -129,6 +129,46 @@ router.get('/filtro-municipios', obtenerMunicipiosFiltrados);
  *         description: Municipio no encontrado
  */
 router.get('/:id', obtenerMunicipioPorId);  // No requiere JWT
+
+/**
+ * @swagger
+ * /api/municipios/{id}:
+ *   put:
+ *     summary: Actualiza un municipio por ID
+ *     description: Endpoint para actualizar un municipio específico por su ID.
+ *     tags: [Municipios]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del municipio a actualizar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               coordenadas:
+ *                 type: object
+ *                 properties:
+ *                   latitud:
+ *                     type: number
+ *                   longitud:
+ *                     type: number
+ *     responses:
+ *       200:
+ *         description: Municipio actualizado exitosamente
+ *       404:
+ *         description: Municipio no encontrado
+ *       400:
+ *         description: Error en la validación
+ */
+router.put('/:id', actualizarMunicipio);
 
 
 

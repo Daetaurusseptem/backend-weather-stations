@@ -122,7 +122,7 @@ class Server {
   public start(port: number ): void {
   
     this.server.listen(port, () => {
-      
+      console.log('server running on port ' + port);
     }); 
   }
 }
