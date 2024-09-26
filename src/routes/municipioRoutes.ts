@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { crearMunicipio, obtenerMunicipios, obtenerMunicipioPorId, obtenerMunicipiosFiltrados, actualizarMunicipio } from '../controllers/municipioController';
+import { crearMunicipio, obtenerMunicipios, obtenerMunicipioPorId, obtenerMunicipiosFiltrados, actualizarMunicipio, getAverageSensorData } from '../controllers/municipioController';
 import { autenticarJWT } from '../middleware/authMiddleware';
 import { crearMunicipioValidator } from '../middleware/validations';  // Validator para municipio
 import { validateRequest } from '../middleware/errorHandler';  // Middleware para manejar errores
@@ -169,6 +169,10 @@ router.get('/:id', obtenerMunicipioPorId);  // No requiere JWT
  *         description: Error en la validación
  */
 router.put('/:id', actualizarMunicipio);
+
+
+router.get('/:municipioId/average', getAverageSensorData);
+
 
 
 
