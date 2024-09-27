@@ -74,9 +74,9 @@ export const obtenerDatoSensorPorId = async (req: Request, res: Response, next: 
 export const obtenerDatoSensorPorEstacionId = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { estacionId } = req.params;
-
     // Buscar el único dato de sensor asociado con la estación, y poblamos la estación
     const datoSensor = await SensorData.findOne({ estacion: estacionId }).populate('estacion');
+    console.log('dato '+datoSensor);
 
     if (!datoSensor) {
       return res.status(404).json({ message: 'Dato de sensor no encontrado' });

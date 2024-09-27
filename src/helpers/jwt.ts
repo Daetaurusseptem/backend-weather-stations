@@ -12,19 +12,17 @@ interface JwtPayload {
     return new Promise((resolve, reject) => {
 
         const payload = {
-            uid
+            uid 
         };
 
         jwt.sign(payload,
-            process.env.JWT as string, {
-                expiresIn: '24h'
-            },
+            process.env.JWT as string,
             (err, token) => {
                 if (err) {
                     
                     reject('could not generate JWT')
                 }else{
-                    resolve(token)
+                    resolve(token) 
                 }
 
             }

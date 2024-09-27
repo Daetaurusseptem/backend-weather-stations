@@ -2,24 +2,37 @@ import { Request, Response, NextFunction } from 'express';
 import SensorData from '../models/models-mongoose/sensor-data-historial';
 import mongoose from 'mongoose';
 import { validationResult } from 'express-validator';
+import estacion from '../models/models-mongoose/estacion';
+import SensorDataHistorial from '../models/models-mongoose/sensor-data-historial';
 
 // Función auxiliar para calcular el rango de tiempo
 const calcularRangoDeTiempo = (lapso: string): Date => {
   const ahora = new Date();
+  let fechaInicio: Date;
+
   switch (lapso) {
     case 'hora':
-      return new Date(ahora.getTime() - 60 * 60 * 1000); // Última hora
+      fechaInicio = new Date(ahora.getTime() - 60 * 60 * 1000); // Última hora
+      break;
     case 'dia':
-      return new Date(ahora.getTime() - 24 * 60 * 60 * 1000); // Último día
+      fechaInicio = new Date(ahora.getTime() - 24 * 60 * 60 * 1000); // Último día
+      break;
     case 'semana':
-      return new Date(ahora.getTime() - 7 * 24 * 60 * 60 * 1000); // Última semana
+      fechaInicio = new Date(ahora.getTime() - 7 * 24 * 60 * 60 * 1000); // Última semana
+      break;
     case 'mes':
-      return new Date(ahora.setMonth(ahora.getMonth() - 1)); // Último mes
+      fechaInicio = new Date(ahora);
+      fechaInicio.setMonth(fechaInicio.getMonth() - 1); // Último mes
+      break;
     case 'dos-meses':
-      return new Date(ahora.setMonth(ahora.getMonth() - 2)); // Últimos dos meses
+      fechaInicio = new Date(ahora);
+      fechaInicio.setMonth(fechaInicio.getMonth() - 2); // Últimos dos meses
+      break;
     default:
       throw new Error('Rango de tiempo no válido');
   }
+
+  return fechaInicio;
 };
 
 // Controlador para obtener métricas
@@ -32,6 +45,7 @@ export const obtenerMetricas = async (req: Request, res: Response, next: NextFun
     }
 
     const { estacionId, lapso } = req.params;
+    console.log('Parámetros recibidos:', estacionId, lapso);
 
     // Verificar si el ID de la estación es válido
     if (!mongoose.Types.ObjectId.isValid(estacionId)) {
@@ -39,11 +53,17 @@ export const obtenerMetricas = async (req: Request, res: Response, next: NextFun
     }
 
     const fechaInicio = calcularRangoDeTiempo(lapso);
+    console.log('Fecha de inicio calculada:', fechaInicio);
 
-    // Verificar que la estación exista
+    
+    const estacionExiste = await estacion.findById(estacionId);
+     if (!estacionExiste) {
+       return res.status(404).json({ message: 'La estación no existe' });
+     }
+
     const estacionObjectId = new mongoose.Types.ObjectId(estacionId);
 
-    const metrics = await SensorData.aggregate([
+    const metrics = await SensorDataHistorial.aggregate([
       { $match: { estacion: estacionObjectId, timestamp: { $gte: fechaInicio } } },
       {
         $group: {
@@ -68,6 +88,7 @@ export const obtenerMetricas = async (req: Request, res: Response, next: NextFun
         },
       },
     ]);
+    console.log('Resultados de la agregación:', metrics);
 
     // Si no hay datos
     if (!metrics || metrics.length === 0) {
