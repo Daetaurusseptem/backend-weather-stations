@@ -26,7 +26,11 @@ export interface ISensorData extends Document {
 
 const SensorDataSchema: Schema = new Schema({
   estacion: { type: Schema.Types.ObjectId, ref: 'Estacion', required: true },
-  timestamp: { type: Date, default: Date.now },
+  timestamp: { 
+    type: Date, 
+    default: Date.now,
+    expires: process.env.LIVE_DATA_RETENTION || '2d' // Purga automática de datos en vivo (Configurable)
+  },
   temp: {type:Number||null, required: false},
   o3: {type:Number||null, required: false},
   no: {type:Number||null, required: false},
@@ -72,5 +76,8 @@ SensorDataSchema.pre<ISensorData>('save', function (next) {
   cleanInvalidFields(this, camposNumericos);
   next();
 });
+
+// Índices para búsquedas de última lectura por estación
+SensorDataSchema.index({ estacion: 1, timestamp: -1 });
 
 export default mongoose.model<ISensorData>('SensorData', SensorDataSchema);

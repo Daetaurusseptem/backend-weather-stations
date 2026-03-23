@@ -6,13 +6,14 @@ import estacion from '../models/models-mongoose/estacion';
 
 // Crear una nueva estación
 export const crearEstacion = async (req: Request, res: Response) => {
-  const { nombre, ubicacion, municipioId } = req.body;
+  console.log("--> CONTROLLER RECEIVING: ", req.body);
+  const { nombre, ubicacion, municipio } = req.body;
 
   try {
     const nuevaEstacion = new Estacion({
       nombre,
       ubicacion,
-      municipio: municipioId,
+      municipio,
       asignada: false, // La estación comienza como no asignada
     });
 

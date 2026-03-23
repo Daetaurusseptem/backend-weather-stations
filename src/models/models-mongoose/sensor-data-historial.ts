@@ -49,7 +49,7 @@ const SensorDataHistorialSchema: Schema = new Schema({
   timestamp: {
     type: Date,
     default: Date.now,
-    expires: '60d'  // TTL: se eliminarán automáticamente después de 60 días
+    expires: process.env.HISTORIC_DATA_RETENTION || '60d'  // configurable
   }
 });
 
@@ -80,6 +80,9 @@ SensorDataHistorialSchema.pre<SensorDataHistorial>('save', function (next) {
   cleanInvalidFields(this, camposNumericosHistorial);
   next();
 });
+
+// Índices para optimizar las consultas de agregación (por estación y rango de fechas)
+SensorDataHistorialSchema.index({ estacion: 1, timestamp: -1 });
 
 // Crear el modelo de historial
 const SensorDataHistorial = mongoose.model<SensorDataHistorial>('SensorDataHistorial', SensorDataHistorialSchema);

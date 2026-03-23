@@ -124,7 +124,7 @@ export const getAverageSensorData = async (req:Request, res:Response) => {
 
     // Calcular los promedios
     const fieldsToAverage = ['temp', 'o3', 'no', 'no2', 'nox', 'so2', 'co', 'presion', 'temp_ambiente', 'humedad_rel', 'dir_viento', 'rad_sol', 'pm10', 'pm2_5', 'cot', 'co2', 'o3_2'];
-    const sumData = {};
+    const sumData: Record<string, number> = {};
     let count = latestSensorData.length;
 
     fieldsToAverage.forEach(field => sumData[field] = 0);
@@ -138,7 +138,7 @@ export const getAverageSensorData = async (req:Request, res:Response) => {
       });
     });
 
-    const avgData = {};
+    const avgData: Record<string, number> = {};
     fieldsToAverage.forEach(field => {
       avgData[field] = sumData[field] / count;
     });
@@ -149,7 +149,7 @@ export const getAverageSensorData = async (req:Request, res:Response) => {
       count
     });
 
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     res.status(500).json({ message: 'Error en el servidor', error: err.message });
   }

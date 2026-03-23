@@ -45,7 +45,6 @@ export const obtenerMetricas = async (req: Request, res: Response, next: NextFun
     }
 
     const { estacionId, lapso } = req.params;
-    console.log('Parámetros recibidos:', estacionId, lapso);
 
     // Verificar si el ID de la estación es válido
     if (!mongoose.Types.ObjectId.isValid(estacionId)) {
@@ -53,8 +52,6 @@ export const obtenerMetricas = async (req: Request, res: Response, next: NextFun
     }
 
     const fechaInicio = calcularRangoDeTiempo(lapso);
-    console.log('Fecha de inicio calculada:', fechaInicio);
-
     
     const estacionExiste = await estacion.findById(estacionId);
      if (!estacionExiste) {
@@ -88,7 +85,6 @@ export const obtenerMetricas = async (req: Request, res: Response, next: NextFun
         },
       },
     ]);
-    console.log('Resultados de la agregación:', metrics);
 
     // Si no hay datos
     if (!metrics || metrics.length === 0) {
